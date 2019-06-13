@@ -1,19 +1,30 @@
 
 pub fn solve(text: String) -> String {
     let c1 = text.lines();
-    let c2 = text.lines().skip(1);
 
     fn find_distance<'a>(pair: (&'a str, &'a str)) -> (&'a str,&'a str,usize) {
        let (p,q) = pair; 
        let r = p.chars().zip(q.chars()).fold(0,|acc, (p,q)|acc + (p == q) as usize );
-       println!("{:?}",(p,q,r));
        (p,q,r)
     }
 
-    let (p,q,i): (&str,&str,usize) = c1.zip(c2)
-        .map(find_distance)
-        .max_by(|a,b| a.2.cmp(&b.2))
-        .unwrap();
+    let mut best: (&str,&str,usize) = (&"".to_string(),&"".to_string(),0);
+    let mut i = 0;
+    for e in c1 {
+        i += 1;
+        let c2 = text.lines().skip(i);
+        for f in c2 {
+            if e == f {
+                continue;
+            }
+            let (p,q,r) = find_distance((e,f));
+            if r > best.2 {
+                best = (p,q,r);
+            }
+        }
+    }
+
+    let (p,q,r) = best;
 
     let s: Vec<char> = p.chars().zip(q.chars())
         .filter(|(a,b)| a == b)
@@ -21,11 +32,7 @@ pub fn solve(text: String) -> String {
         .collect();
 
     let mut key = String::new();
-    for c in s {
-        key.push(c);
-    }
+    for c in s { key.push(c); }
 
-    println!("{:?} {}", key, key.len());
-
-    format!("{} = {} {} {}", p, q, i, p.len())
+    format!("{} {} {} {}", key, r, p, q)
 }
