@@ -1,4 +1,5 @@
-extern crate regex;
+#[macro_use]
+extern crate scan_fmt;
 
 use std::fs::File;
 use std::io::prelude::*;

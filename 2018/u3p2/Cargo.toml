@@ -5,4 +5,4 @@ authors = ["lu-dde <51797401+lu-dde@users.noreply.github.com>"]
 edition = "2018"
 
 [dependencies]
-regex = "1"
+scan_fmt = "0.2.1"
