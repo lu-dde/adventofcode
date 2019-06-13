@@ -60,7 +60,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "u3p1"
+name = "u3p2"
 version = "0.1.0"
 dependencies = [
  "regex 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",

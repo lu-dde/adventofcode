@@ -1,4 +1,7 @@
 use std::collections::HashMap;
+use std::collections::HashSet;
+use std::collections::LinkedList;
+
 
 use regex::Regex;
 
@@ -32,15 +35,39 @@ fn to_sq(p1: (i32,i32),p2: (i32,i32)) -> Vec<i32> {
 pub fn solve(text: String) -> String {
     let c1 = text.lines();
 
-    let mut hm = HashMap::new();
+    let mut hm: HashMap<i32, LinkedList<i32>> = HashMap::new();
+    let mut passed = HashSet::new();
+    let mut invalid = HashSet::new();
 
-    let p: Vec<i32> = c1.map(pr).map(|(_,p,q)| to_sq(p,q) ).flatten().collect();
-    for i in p {
-      hm.entry(i).and_modify(|e| { *e += 1 } ).or_insert(1);
+    let p: Vec<(i32,Vec<i32>)> = c1.map(pr).map(|(id,p,q)| (id,to_sq(p,q)) ).collect();
+
+    for (id,t) in p {
+        passed.insert(id);
+        for i in t {
+
+            hm.entry(i)
+                .and_modify(|e| {
+                    if e.len() > 1 {
+                        invalid.insert(id);
+                    } else if e.len() == 1 {
+                        invalid.insert(id);
+                        invalid.insert(e.front().unwrap().clone());
+                    }
+                    e.push_back(id)
+                } )
+                .or_insert_with(|| {
+                    let mut list: LinkedList<i32> = LinkedList::new();
+                    list.push_back(id);
+                    list
+                } );
+        }
     }
-    let k = hm.values().fold(0,|acc,i| acc + (*i > 1) as i32);
 
-    let pa = hm.len();
+    let dif = passed.difference(&invalid);
 
-    format!("{} {}", pa, k)
+    for x in dif {
+        println!("{}", x);
+    }
+
+    format!("h")
 }
