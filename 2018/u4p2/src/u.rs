@@ -58,7 +58,6 @@ pub fn solve(text: String) -> String {
 
     let q = p.iter().zip(p.iter().cycle().skip(1));
 
-    let mut sleep_amount = HashMap::new();
     let mut minute_count: HashMap<_,i64> = HashMap::new();
 
     // possible transitions
@@ -74,14 +73,8 @@ pub fn solve(text: String) -> String {
             GE::Asleep => {
                 let nr_of_minutes =
                     (*sleep_to - *sleep_start).num_minutes();
-                    println!("{:?} {:?} {}", nr_of_minutes, sleep_start, sleep_to);
-                sleep_amount
-                    .entry(current_guard_id)
-                    .and_modify(|e| *e += nr_of_minutes)
-                    .or_insert(nr_of_minutes);
                 let s = sleep_start.time();
                 for offset in 0..nr_of_minutes {
-                    println!("{}", offset);
                     minute_count
                         .entry((current_guard_id, s + chrono::Duration::minutes(offset) ))
                         .and_modify(|e| *e += 1)
@@ -92,14 +85,11 @@ pub fn solve(text: String) -> String {
         }
     }
 
-    let (gid, amount): (i64,i64) = sleep_amount.into_iter()//.map(|(a,b)| (*a,*b) )
-        .max_by_key( |(_,x)| x.clone() ).unwrap();
-
-    let ((_,minute), count) = minute_count
+    let ((gid,minute), count) = minute_count
         .iter()
-        .filter(|((c, _), _)| *c == gid )
         .max_by(|((_, _), x), ((_, _), y)| x.cmp(y)).unwrap();
 
-    println!("guard {} sleept {} minute {} count {}", gid, amount, minute, count);
+
+    println!("guard {} minute {} count {}", gid, minute, count);
     format!("{:#?}", gid * minute.minute() as i64)
 }
