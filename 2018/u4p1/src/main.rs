@@ -1,6 +1,10 @@
 #[macro_use]
 extern crate scan_fmt;
 
+extern crate chrono;
+
+use std::time::Instant;
+
 use std::fs::File;
 use std::io::prelude::*;
 
