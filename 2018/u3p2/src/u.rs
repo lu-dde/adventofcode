@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 type Square = (i32, (i32, i32), (i32, i32));
 
 fn pr(line: &str) -> Square {
@@ -19,6 +21,8 @@ fn overlapping_squares(p: Square, q: Square) -> bool {
 }
 
 pub fn solve(text: String) -> String {
+    let now = Instant::now();
+
     let c1 = text.lines();
 
     let mut passed = vec![];
@@ -33,6 +37,8 @@ pub fn solve(text: String) -> String {
             _ => {}
         }
     }
+
+    println!("{}", now.elapsed().as_millis());
 
     format!("{:?}", passed)
 }
