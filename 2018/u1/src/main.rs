@@ -20,7 +20,6 @@ fn main() {
                 Ok(mut file) => {
                     match file.read_to_string(&mut buf) {
                         Ok(_) => {
-                            println!("buf: {:#?}", buf);
                             res = Some(u::solve(buf));
                         }
                         Err(why) => {
