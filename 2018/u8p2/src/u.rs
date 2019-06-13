@@ -1,7 +1,10 @@
+//use rand::Rng;
+use std::cmp::min;
+
 #[derive(Debug)]
 enum Action {
     ReadHead,
-    Children(i32),
+    Children( (i32,i32,i32) ),
     Eat(i32),
     EndNode,
 }
@@ -19,32 +22,33 @@ pub fn solve(text: String) -> String {
         .peekable();
 
     'outer: loop {
-        /*
+
         println!();
         println!();
         println!("children  {:?}", children);
         println!("meta      {:?}", meta);
         println!("sum       {:?}", sum);
         println!("action    {:?}", action);
-        */
+
         match action {
             Action::ReadHead => {
                 if t.peek().is_some() {
                     let nr_of_children = t.next().unwrap();
-                    children.push(nr_of_children);
+                    let child = (0,min(1,nr_of_children),nr_of_children);
+                    children.push( child );
                     let nr_of_meta = t.next().unwrap();
                     meta.push(nr_of_meta);
 
-                    action = Action::Children(nr_of_children);
+                    action = Action::Children( child );
                 } else {
                     panic!("ok no next");
                 }
             }
-            Action::Children(0) => {
+            Action::Children( (id,curr_child,child_count) ) if curr_child == child_count => {
                 let meta = meta.pop().unwrap();
                 action = Action::Eat(meta);
             }
-            Action::Children(_) => {
+            Action::Children( (id,curr_child,child_count) ) => {
                 action = Action::ReadHead;
             }
             Action::Eat(0) => {
@@ -56,10 +60,10 @@ pub fn solve(text: String) -> String {
                 action = Action::Eat(num - 1);
             }
             Action::EndNode => {
-                if let Some(parent) = children.pop() {
-                    if parent > 0 {
-                        children.push(parent - 1);
-                        action = Action::Children(parent - 1);
+                if let Some( (id,curr_child,child_count) ) = children.pop() {
+                    if curr_child <= child_count {
+                        children.push( (id,curr_child+1,child_count) );
+                        action = Action::Children( (id,curr_child+1,child_count) );
                     } else {
                         action = Action::EndNode;
                     }
