@@ -13,7 +13,7 @@ fn pr(line: &str) -> Square {
     t
 }
 
-fn overlapping_squares(p: Square, q: Square) -> bool {
+fn overlaps(p: Square, q: Square) -> bool {
     let (sq_id1, (a_l, a_t), (a_r, a_b)) = p;
     let (sq_id2, (b_l, b_t), (b_r, b_b)) = q;
     sq_id1 != sq_id2 && !(a_r < b_l || b_r < a_l || a_b < b_t || b_b < a_t)
@@ -26,11 +26,10 @@ pub fn solve(text: String) -> String {
     let c1 = text.lines();
 
     let mut passed = vec![];
-    let m = c1.map(pr);
-    let sq: Vec<Square> = m.collect();
+    let sq: Vec<Square> = c1.map(pr).collect();
     for head in (&sq).iter() {
         let id = &head.0;
-        match sq.iter().find(|&other| overlapping_squares(*head, *other)) {
+        match sq.iter().find(|&other| overlaps(*head, *other)) {
             None => {
                 passed.push(id);
             }
