@@ -36,24 +36,19 @@ pub fn solve(text: String) -> String {
     let c1 = text.lines();
 
     let mut hm: HashMap<i32, LinkedList<i32>> = HashMap::new();
-    let mut passed = HashSet::new();
-    let mut invalid = HashSet::new();
-
-    let p: Vec<(i32,Vec<i32>)> = c1.map(pr).map(|(id,p,q)| (id,to_sq(p,q)) ).collect();
-
-    for (id,t) in p {
-        passed.insert(id);
-        for i in t {
-
+    let start = (HashSet::new(),HashSet::new());
+    let (passed, invalid) = c1.map(pr).fold(start, |(mut passed,mut invalid), (id,p,q)| {
+        passed.insert(id.clone());
+        for i in to_sq(p,q) {
             hm.entry(i)
                 .and_modify(|e| {
                     if e.len() > 1 {
-                        invalid.insert(id);
+                        invalid.insert(id.clone());
                     } else if e.len() == 1 {
-                        invalid.insert(id);
+                        invalid.insert(id.clone());
                         invalid.insert(e.front().unwrap().clone());
                     }
-                    e.push_back(id)
+                    e.push_back(id.clone())
                 } )
                 .or_insert_with(|| {
                     let mut list: LinkedList<i32> = LinkedList::new();
@@ -61,7 +56,8 @@ pub fn solve(text: String) -> String {
                     list
                 } );
         }
-    }
+        (passed,invalid)
+    });
 
     let dif = passed.difference(&invalid);
 
