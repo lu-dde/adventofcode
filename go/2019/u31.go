@@ -2,56 +2,93 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
 
-//U21 is main proxy for solve, takes a string channel
-func U21(p chan string, s chan string) {
+type pos struct {
+	x int
+	y int
+	d int
+	w int
+}
 
-	// we only expect one line.
-	line, _ := <-p
+//U31 is main proxy for solve, takes a string channel
+func U31(p chan string, s chan string) {
 
-	code := strings.Split(line, ",")
-	var ops = []int{}
+	var steps = math.MaxInt32
+	var visited = map[int]pos{}
 
-	for _, c := range code {
-		i, _ := strconv.Atoi(c)
-		ops = append(ops, i)
-	}
+	var wireID = 3
+	for wire := range p {
+		wireID--
+		var position = pos{x: 0, y: 0, d: 0, w: wireID}
 
-	ops[1] = 12
-	ops[2] = 2
+		cmds := strings.Split(wire, ",")
+		for _, cmd := range cmds {
+			for _, c := range position.move(cmd) {
+				v, ok := visited[c.hash()]
 
-	step := 4
-	var pos = 0
+				if ok {
+					if c.w < v.w {
+						d := c.d + v.d
+						if d < steps {
+							steps = d
+						}
+					}
+				} else {
+					save := c
+					visited[c.hash()] = save
+				}
 
-oploop:
-	for {
-		opcode := ops[pos]
-
-		switch opcode {
-		case 99:
-			fmt.Println("99 :: break loop")
-			break oploop
-		case 1:
-			source1 := ops[pos+1]
-			source2 := ops[pos+2]
-			values1 := ops[source1]
-			values2 := ops[source2]
-			target := ops[pos+3]
-			ops[target] = values1 + values2
-		case 2:
-			source1 := ops[pos+1]
-			source2 := ops[pos+2]
-			values1 := ops[source1]
-			values2 := ops[source2]
-			target := ops[pos+3]
-			ops[target] = values1 * values2
+			}
 		}
+	}
+	fmt.Println()
 
-		pos += step
+	s <- fmt.Sprintf("Solution: %d", steps)
+}
+
+func absI(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+func (origo *pos) hash() int {
+	return origo.x*10000 + origo.y
+}
+
+func (origo *pos) distance() int {
+	return absI(origo.x) + absI(origo.y)
+}
+
+func (origo *pos) move(cmd string) []pos {
+	var dx = 0
+	var dy = 0
+	command := cmd[0]
+	switch command {
+	case 'U':
+		dx = 1
+	case 'D':
+		dx = -1
+	case 'R':
+		dy = 1
+	case 'L':
+		dy = -1
+	}
+	amount, _ := strconv.Atoi(cmd[1:])
+
+	var visited = []pos{}
+	for index := 0; index < amount; index++ {
+		visit := pos{x: dx + origo.x, y: dy + origo.y, d: 1 + origo.d, w: origo.w}
+		origo.x = visit.x
+		origo.y = visit.y
+		origo.d = visit.d
+		visited = append(visited, visit)
 	}
 
-	s <- fmt.Sprintf("Solution: %d", ops[0])
+	return visited
 }
