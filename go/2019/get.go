@@ -8,6 +8,7 @@ func getSolver(name string) solver {
 		"12": U12,
 		"21": U21,
 		"22": U22,
+		"31": U31,
 	}
 
 	return functions[name]
@@ -19,6 +20,7 @@ func getTestfile(name string) string {
 		"12": "input/u11.txt",
 		"21": "input/u21.txt",
 		"22": "input/u21.txt",
+		"31": "input/u31.txt",
 	}
 
 	return textfiles[name]
