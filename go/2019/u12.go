@@ -25,8 +25,9 @@ func U12(p chan string, s chan string) {
 func getFuel(i int) int {
 	if i < 9 {
 		return 0
-	} else {
-		r := i/3 - 2
-		return r + getFuel(r)
 	}
+
+	r := i/3 - 2
+	return r + getFuel(r)
+
 }
