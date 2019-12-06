@@ -39,6 +39,16 @@ type sol2 struct {
 	result int
 }
 
+func getOpsValue(mode int, ops *[]int, pos int) int {
+	if mode == 0 {
+		source1 := (*ops)[pos]
+		return (*ops)[source1]
+	} else if mode == 1 {
+		return (*ops)[pos]
+	}
+	panic("unkown mode")
+}
+
 func opscode2(opsChan chan []int, solution chan sol) {
 
 	for ops := range opsChan {
@@ -49,35 +59,36 @@ func opscode2(opsChan chan []int, solution chan sol) {
 
 	oploop:
 		for {
-			opcode := ops[pos]
+			opcodeCompact := ops[pos]
+
+			opcode := opcodeCompact % 100
+			p1Mode := (opcodeCompact / 100) % 10
+			p2Mode := (opcodeCompact / 1000) % 10
+			//p3Mode := (opcodeCompact / 10000) % 10
+
+			//fmt.Println("opcode", opcodeCompact, opcode, p1Mode, p2Mode, p3Mode)
+
+			var pos1 = pos + 1
+			var pos2 = pos + 2
+			var pos3 = pos + 3
 
 			switch opcode {
 			case 99:
 				break oploop
 			case 1:
-				source1 := ops[pos+1]
-				source2 := ops[pos+2]
-				values1 := ops[source1]
-				values2 := ops[source2]
-				target := ops[pos+3]
-				ops[target] = values1 + values2
+				ops[ops[pos3]] = getOpsValue(p1Mode, &ops, pos1) + getOpsValue(p2Mode, &ops, pos2)
 				pos += 4
 			case 2:
-				source1 := ops[pos+1]
-				source2 := ops[pos+2]
-				values1 := ops[source1]
-				values2 := ops[source2]
-				target := ops[pos+3]
-				ops[target] = values1 * values2
+				ops[ops[pos3]] = getOpsValue(p1Mode, &ops, pos1) * getOpsValue(p2Mode, &ops, pos2)
 				pos += 4
 			case 3:
-				source1 := ops[pos+1]
-				ops[source1] = getIntCodeInput()
+				ops[ops[pos1]] = getIntCodeInput()
 				pos += 2
 			case 4:
-				source1 := ops[pos+1]
-				putIntCodeOutput(ops[source1])
+				putIntCodeOutput(getOpsValue(p1Mode, &ops, pos1))
 				pos += 2
+			default:
+				panic("unkown opcode")
 			}
 
 		}
@@ -88,7 +99,7 @@ func opscode2(opsChan chan []int, solution chan sol) {
 
 func getIntCodeInput() int {
 	fmt.Printf("read: %d\n", 0)
-	return 31
+	return 1
 }
 
 func putIntCodeOutput(output int) {
