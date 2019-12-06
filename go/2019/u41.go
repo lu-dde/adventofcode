@@ -32,6 +32,18 @@ loop:
 			continue
 		}
 
+		var hasDouble = false
+		var prev = -1
+		for _, v := range low {
+			if prev == v {
+				hasDouble = true
+			}
+			prev = v
+		}
+		if !hasDouble {
+			continue
+		}
+
 		if passedPass(&low, &high) {
 			break loop
 		}
@@ -62,14 +74,8 @@ func nextValidFormatPass(pass *[]int) bool {
 			break
 		}
 	}
-	var prev = -1
-	for _, v := range *pass {
-		if prev == v {
-			return true
-		}
-		prev = v
-	}
-	return false
+
+	return true
 }
 
 func passedPass(pass *[]int, other *[]int) bool {
