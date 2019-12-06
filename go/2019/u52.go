@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-//U51 is main proxy for solve, takes a string channel
-func U51(p chan string, s chan string) {
+//U52 is main proxy for solve, takes a string channel
+func U52(p chan string, s chan string) {
 
 	// we only expect one line.
 	line, _ := <-p
@@ -23,7 +23,7 @@ func U51(p chan string, s chan string) {
 	opcodeChan := make(chan []int)
 	solutions := make(chan sol)
 
-	go opscode2(opcodeChan, solutions)
+	go opscode3(opcodeChan, solutions)
 
 	opcodeChan <- cps
 	close(opcodeChan)
@@ -33,23 +33,7 @@ func U51(p chan string, s chan string) {
 
 }
 
-type sol2 struct {
-	noun   int
-	verb   int
-	result int
-}
-
-func getOpsValue(mode int, ops *[]int, pos int) int {
-	if mode == 0 {
-		source1 := (*ops)[pos]
-		return (*ops)[source1]
-	} else if mode == 1 {
-		return (*ops)[pos]
-	}
-	panic("unkown mode")
-}
-
-func opscode2(opsChan chan []int, solution chan sol) {
+func opscode3(opsChan chan []int, solution chan sol) {
 
 	for ops := range opsChan {
 		n := ops[1]
@@ -82,10 +66,10 @@ func opscode2(opsChan chan []int, solution chan sol) {
 				ops[ops[pos3]] = getOpsValue(p1Mode, &ops, pos1) * getOpsValue(p2Mode, &ops, pos2)
 				pos += 4
 			case 3:
-				ops[ops[pos1]] = 1
+				ops[ops[pos1]] = getIntCodeInput()
 				pos += 2
 			case 4:
-				fmt.Printf("put: %d\n", getOpsValue(p1Mode, &ops, pos1))
+				putIntCodeOutput(getOpsValue(p1Mode, &ops, pos1))
 				pos += 2
 			default:
 				panic("unkown opcode")
@@ -95,4 +79,13 @@ func opscode2(opsChan chan []int, solution chan sol) {
 
 		solution <- sol{noun: n, verb: v, result: ops[0]}
 	}
+}
+
+func getIntCodeInput() int {
+	fmt.Printf("read: %d\n", 0)
+	return 1
+}
+
+func putIntCodeOutput(output int) {
+	fmt.Printf("put: %d\n", output)
 }
