@@ -21,24 +21,21 @@ func U52(p chan string, s chan string) {
 	}
 
 	opcodeChan := make(chan []int)
-	solutions := make(chan sol)
+	solutions := make(chan int)
 
 	go opscode3(opcodeChan, solutions)
 
 	opcodeChan <- cps
 	close(opcodeChan)
 
-	solution, _ := <-solutions
-	s <- fmt.Sprintf("Solution: %d, %v", 100*solution.noun+solution.verb, solution)
+	s <- fmt.Sprintf("Solution: %d", <-solutions)
 
 }
 
-func opscode3(opsChan chan []int, solution chan sol) {
+func opscode3(opsChan chan []int, solution chan int) {
+	var healthcheck = 0
 
 	for ops := range opsChan {
-		n := ops[1]
-		v := ops[2]
-
 		var pos = 0
 
 	oploop:
@@ -50,7 +47,8 @@ func opscode3(opsChan chan []int, solution chan sol) {
 			p2Mode := (opcodeCompact / 1000) % 10
 			//p3Mode := (opcodeCompact / 10000) % 10
 
-			//fmt.Println("opcode", opcodeCompact, opcode, p1Mode, p2Mode, p3Mode)
+			//fmt.Println(ops)
+			//fmt.Println(pos, "opcode", opcodeCompact, opcode, p1Mode, p2Mode)
 
 			var pos1 = pos + 1
 			var pos2 = pos + 2
@@ -66,26 +64,42 @@ func opscode3(opsChan chan []int, solution chan sol) {
 				ops[ops[pos3]] = getOpsValue(p1Mode, &ops, pos1) * getOpsValue(p2Mode, &ops, pos2)
 				pos += 4
 			case 3:
-				ops[ops[pos1]] = getIntCodeInput()
+				ops[ops[pos1]] = 5
 				pos += 2
 			case 4:
-				putIntCodeOutput(getOpsValue(p1Mode, &ops, pos1))
+				healthcheck = getOpsValue(p1Mode, &ops, pos1)
 				pos += 2
+			case 5:
+				if getOpsValue(p1Mode, &ops, pos1) != 0 {
+					pos = getOpsValue(p2Mode, &ops, pos2)
+				} else {
+					pos += 3
+				}
+			case 6:
+				if getOpsValue(p1Mode, &ops, pos1) == 0 {
+					pos = getOpsValue(p2Mode, &ops, pos2)
+				} else {
+					pos += 3
+				}
+			case 7:
+				ops[ops[pos3]] = bool2int(getOpsValue(p1Mode, &ops, pos1) < getOpsValue(p2Mode, &ops, pos2))
+				pos += 4
+			case 8:
+				ops[ops[pos3]] = bool2int(getOpsValue(p1Mode, &ops, pos1) == getOpsValue(p2Mode, &ops, pos2))
+				pos += 4
 			default:
 				panic("unkown opcode")
 			}
 
 		}
-
-		solution <- sol{noun: n, verb: v, result: ops[0]}
 	}
+	solution <- healthcheck
+	close(solution)
 }
 
-func getIntCodeInput() int {
-	fmt.Printf("read: %d\n", 0)
-	return 1
-}
-
-func putIntCodeOutput(output int) {
-	fmt.Printf("put: %d\n", output)
+func bool2int(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
 }
