@@ -20,7 +20,7 @@ func U71(p chan string, s chan string) {
 		ops = append(ops, i)
 	}
 
-	perms := makeAmpPerms()
+	perms := makeAmpPerms([]int{0, 1, 2, 3, 4})
 
 	var winnerCFG []int
 	var winnerB = 0
@@ -40,8 +40,7 @@ func U71(p chan string, s chan string) {
 
 }
 
-func makeAmpPerms() [][]int {
-	arr := []int{0, 1, 2, 3, 4}
+func makeAmpPerms(arr []int) [][]int {
 	var helper func([]int, int)
 	res := [][]int{}
 
