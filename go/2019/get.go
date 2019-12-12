@@ -37,7 +37,7 @@ func getTestfile(name string) string {
 		"52": "input/u51.txt",
 		"61": "input/u61.txt",
 		"62": "input/u61.txt",
-		"71": "input/u71.test.txt",
+		"71": "input/u71.txt",
 	}[name]
 
 	if !ok {
