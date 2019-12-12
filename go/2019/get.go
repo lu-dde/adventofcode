@@ -39,7 +39,7 @@ func getTestfile(name string) string {
 		"61": "input/u61.txt",
 		"62": "input/u61.txt",
 		"71": "input/u71.txt",
-		"72": "input/u72.txt",
+		"72": "input/u71.txt",
 	}[name]
 
 	if !ok {
