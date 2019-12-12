@@ -2,22 +2,40 @@ package main
 
 import (
 	"fmt"
-	"strconv"
+	"strings"
 )
 
 //U61 is main proxy for solve, takes a string channel
 func U61(p chan string, s chan string) {
-	var t = 0
 
-	for {
-		line, ok := <-p
+	var rel = map[string][]string{}
+
+	// format: QWE)ERT, build tree with root COM
+	for relation := range p {
+		parts := strings.Split(relation, ")")
+		inner := parts[0]
+		outer := parts[1]
+
+		_, ok := rel[inner]
 		if ok {
-			i, _ := strconv.Atoi(line)
-			t += i/3 - 2
+			rel[inner] = append(rel[inner], outer)
 		} else {
-			break
+			rel[inner] = []string{outer}
 		}
 	}
 
-	s <- fmt.Sprintf("Solution: %d", t)
+	depthSum := sumTreeDepth(&rel, "COM", 0)
+
+	s <- fmt.Sprintf("Solution: %v", depthSum)
+}
+
+func sumTreeDepth(tree *map[string][]string, node string, d int) int {
+	children := (*tree)[node]
+
+	var depth = d
+	for _, currentNode := range children {
+		depth += sumTreeDepth(tree, currentNode, d+1)
+	}
+
+	return depth
 }
