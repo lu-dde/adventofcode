@@ -31,7 +31,7 @@ func getTestfile(name string) string {
 		"51": "input/u51.txt",
 		"52": "input/u51.txt",
 		"61": "input/u61.txt",
-		"62": "input/u61.test.txt",
+		"62": "input/u61.txt",
 	}
 
 	return textfiles[name]
