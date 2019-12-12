@@ -24,13 +24,13 @@ func U61(p chan string, s chan string) {
 		}
 	}
 
-	depthSum := sumTreeDepth(&rel, "COM", 0)
+	depthSum := sumTreeDepth(rel, "COM", 0)
 
 	s <- fmt.Sprintf("Solution: %v", depthSum)
 }
 
-func sumTreeDepth(tree *map[string][]string, node string, d int) int {
-	children := (*tree)[node]
+func sumTreeDepth(tree map[string][]string, node string, d int) int {
+	children := tree[node]
 
 	var depth = d
 	for _, currentNode := range children {
