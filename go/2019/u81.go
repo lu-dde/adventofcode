@@ -6,6 +6,14 @@ import (
 	"strings"
 )
 
+type layer81 struct {
+	nr     int
+	layer  [][]int
+	zeroes int
+	ones   int
+	twos   int
+}
+
 //U81 is main proxy for solve, takes a string channel
 func U81(p chan string, s chan string) {
 	// only one line of input
@@ -14,18 +22,34 @@ func U81(p chan string, s chan string) {
 	reader := strings.NewReader(line)
 
 	wide := 25
-	tall := 3
+	tall := 6
+	square := wide * tall
 
-	var layers = make([][]int, tall)
+	layerCount := reader.Len() / square
 
-	for row := 0; row < tall; row++ {
-		layers[row] = make([]int, wide)
-		for col := 0; col < wide; col++ {
-			b, _ := reader.ReadByte() // skip error, we are sure on size
-			i, _ := strconv.Atoi(string(b))
-			layers[row][col] = i
+	var layers = make([]layer81, reader.Len()/square)
+
+	var winner = layer81{nr: -1, zeroes: square + 1}
+
+	for layerIndex := 0; layerIndex < layerCount; layerIndex++ {
+		// TODO
+		var counts = make([]int, 3)
+		var partialImage = make([][]int, tall)
+		for row := 0; row < tall; row++ {
+			partialImage[row] = make([]int, wide)
+			for col := 0; col < wide; col++ {
+				b, _ := reader.ReadByte() // skip error, we are sure on size
+				i, _ := strconv.Atoi(string(b))
+				partialImage[row][col] = i
+				counts[i]++
+			}
+		}
+		layer := layer81{nr: layerIndex, layer: partialImage, zeroes: counts[0], ones: counts[1], twos: counts[2]}
+		layers[layerIndex] = layer
+		if layer.zeroes < winner.zeroes {
+			winner = layer
 		}
 	}
 
-	s <- fmt.Sprintf("Solution: %d", layers)
+	s <- fmt.Sprintf("Solution: %d", winner.ones*winner.twos)
 }
