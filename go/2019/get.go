@@ -20,6 +20,7 @@ func getSolver(name string) solver {
 		"81": U81,
 		"82": U82,
 		"91": U91,
+		"92": U92,
 	}[name]
 
 	if !ok {
@@ -46,6 +47,7 @@ func getTestfile(name string) string {
 		"81": "input/u81.txt",
 		"82": "input/u81.txt",
 		"91": "input/u91.txt",
+		"92": "input/u91.txt",
 	}[name]
 
 	if !ok {
