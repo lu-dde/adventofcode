@@ -1,13 +1,15 @@
-package main
+package u42
 
 import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/lu-dde/adventofcode/solutions/u41"
 )
 
-//U42 is main proxy for solve, takes a string channel
-func U42(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 
 	line, _ := <-p
 	codes := strings.Split(line, "")
@@ -28,7 +30,7 @@ func U42(p chan string, s chan string) {
 loop:
 	for {
 
-		if !nextValidFormatPass(&low) {
+		if !u41.NextValidFormatPass(&low) {
 			continue
 		}
 
@@ -38,7 +40,7 @@ loop:
 			continue
 		}
 
-		if passedPass(&low, &high) {
+		if u41.PassedPass(&low, &high) {
 			break loop
 		}
 		valid++

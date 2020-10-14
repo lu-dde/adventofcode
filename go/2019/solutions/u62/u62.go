@@ -1,4 +1,4 @@
-package main
+package u62
 
 import (
 	"fmt"
@@ -28,8 +28,8 @@ func orbitWalkToTop(treeMap map[string]treeMapNode, from string) []treeMapDistan
 	return walk
 }
 
-//U62 is main proxy for solve, takes a string channel
-func U62(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 
 	var treeMap = map[string]treeMapNode{}
 

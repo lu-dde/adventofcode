@@ -1,4 +1,4 @@
-package main
+package u81
 
 import (
 	"fmt"
@@ -14,8 +14,8 @@ type layer81 struct {
 	twos   int
 }
 
-//U81 is main proxy for solve, takes a string channel
-func U81(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 	// only one line of input
 	line, _ := <-p
 

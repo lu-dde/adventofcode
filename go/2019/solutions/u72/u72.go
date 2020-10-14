@@ -1,13 +1,16 @@
-package main
+package u72
 
 import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/lu-dde/adventofcode/solutions/u51"
+	"github.com/lu-dde/adventofcode/solutions/u71"
 )
 
-//U72 is main proxy for solve, takes a string channel
-func U72(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 
 	// we only expect one line.
 	line, _ := <-p
@@ -20,7 +23,7 @@ func U72(p chan string, s chan string) {
 		ops = append(ops, i)
 	}
 
-	perms := makeAmpPerms([]int{5, 6, 7, 8, 9})
+	perms := u71.MakeAmpPerms([]int{5, 6, 7, 8, 9})
 
 	var winnerCFG []int
 	var winnerB = 0
@@ -90,10 +93,10 @@ oploop:
 		case 99:
 			break oploop
 		case 1:
-			ops[ops[pos3]] = getOpsValue(p1Mode, &ops, pos1) + getOpsValue(p2Mode, &ops, pos2)
+			ops[ops[pos3]] = u51.GetOpsValue(p1Mode, &ops, pos1) + u51.GetOpsValue(p2Mode, &ops, pos2)
 			pos += 4
 		case 2:
-			ops[ops[pos3]] = getOpsValue(p1Mode, &ops, pos1) * getOpsValue(p2Mode, &ops, pos2)
+			ops[ops[pos3]] = u51.GetOpsValue(p1Mode, &ops, pos1) * u51.GetOpsValue(p2Mode, &ops, pos2)
 			pos += 4
 		case 3:
 			in, ok := <-input
@@ -106,27 +109,27 @@ oploop:
 			}
 			pos += 2
 		case 4:
-			healthcheck = getOpsValue(p1Mode, &ops, pos1)
+			healthcheck = u51.GetOpsValue(p1Mode, &ops, pos1)
 			//fmt.Println(id, " sending ", healthcheck)
 			output <- healthcheck
 			pos += 2
 		case 5:
-			if getOpsValue(p1Mode, &ops, pos1) != 0 {
-				pos = getOpsValue(p2Mode, &ops, pos2)
+			if u51.GetOpsValue(p1Mode, &ops, pos1) != 0 {
+				pos = u51.GetOpsValue(p2Mode, &ops, pos2)
 			} else {
 				pos += 3
 			}
 		case 6:
-			if getOpsValue(p1Mode, &ops, pos1) == 0 {
-				pos = getOpsValue(p2Mode, &ops, pos2)
+			if u51.GetOpsValue(p1Mode, &ops, pos1) == 0 {
+				pos = u51.GetOpsValue(p2Mode, &ops, pos2)
 			} else {
 				pos += 3
 			}
 		case 7:
-			ops[ops[pos3]] = bool2int(getOpsValue(p1Mode, &ops, pos1) < getOpsValue(p2Mode, &ops, pos2))
+			ops[ops[pos3]] = bool2int(u51.GetOpsValue(p1Mode, &ops, pos1) < u51.GetOpsValue(p2Mode, &ops, pos2))
 			pos += 4
 		case 8:
-			ops[ops[pos3]] = bool2int(getOpsValue(p1Mode, &ops, pos1) == getOpsValue(p2Mode, &ops, pos2))
+			ops[ops[pos3]] = bool2int(u51.GetOpsValue(p1Mode, &ops, pos1) == u51.GetOpsValue(p2Mode, &ops, pos2))
 			pos += 4
 		default:
 			fmt.Println(id, pos, "opcode", opcodeCompact, opcode, p1Mode, p2Mode)
@@ -136,4 +139,11 @@ oploop:
 	}
 	//fmt.Println(id, " closing opcode ", healthcheck)
 	close(output)
+}
+
+func bool2int(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
 }

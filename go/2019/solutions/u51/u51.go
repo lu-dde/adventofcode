@@ -1,4 +1,4 @@
-package main
+package u51
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-//U51 is main proxy for solve, takes a string channel
-func U51(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 
 	// we only expect one line.
 	line, _ := <-p
@@ -33,13 +33,14 @@ func U51(p chan string, s chan string) {
 
 }
 
-type sol2 struct {
+type sol struct {
 	noun   int
 	verb   int
 	result int
 }
 
-func getOpsValue(mode int, ops *[]int, pos int) int {
+//GetOpsValue get operation int value
+func GetOpsValue(mode int, ops *[]int, pos int) int {
 	if mode == 0 {
 		source1 := (*ops)[pos]
 		return (*ops)[source1]
@@ -76,16 +77,16 @@ func opscode2(opsChan chan []int, solution chan sol) {
 			case 99:
 				break oploop
 			case 1:
-				ops[ops[pos3]] = getOpsValue(p1Mode, &ops, pos1) + getOpsValue(p2Mode, &ops, pos2)
+				ops[ops[pos3]] = GetOpsValue(p1Mode, &ops, pos1) + GetOpsValue(p2Mode, &ops, pos2)
 				pos += 4
 			case 2:
-				ops[ops[pos3]] = getOpsValue(p1Mode, &ops, pos1) * getOpsValue(p2Mode, &ops, pos2)
+				ops[ops[pos3]] = GetOpsValue(p1Mode, &ops, pos1) * GetOpsValue(p2Mode, &ops, pos2)
 				pos += 4
 			case 3:
 				ops[ops[pos1]] = 1
 				pos += 2
 			case 4:
-				fmt.Printf("put: %d\n", getOpsValue(p1Mode, &ops, pos1))
+				fmt.Printf("put: %d\n", GetOpsValue(p1Mode, &ops, pos1))
 				pos += 2
 			default:
 				panic("unkown opcode")

@@ -1,4 +1,4 @@
-package main
+package u91
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-//U91 is main proxy for solve, takes a string channel
-func U91(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 
 	// we only expect one line.
 	line, _ := <-p
@@ -26,14 +26,14 @@ func U91(p chan string, s chan string) {
 
 	input <- 1
 
-	machine := intcode6{
+	machine := Intcode6{
 		ops:    ops,
 		input:  input,
 		output: output,
 	}
 
 	go func() {
-		machine.run()
+		machine.Run()
 	}()
 
 	go func() {
@@ -80,7 +80,7 @@ func getMode(i int64) mode {
 	panic("no such mode")
 }
 
-type intcode6 struct {
+type Intcode6 struct {
 	ops         []int64
 	pos         int64
 	rel         int64
@@ -90,19 +90,29 @@ type intcode6 struct {
 	op          opcode
 }
 
+//NewIntcode6 init with needed fields
+func NewIntcode6(ops []int64, input chan int64, output chan int64) Intcode6 {
+	return Intcode6{
+		ops:    ops,
+		input:  input,
+		output: output,
+	}
+}
+
 type opcode struct {
 	opcode int64
 	modes  []mode
 }
 
-func (machine *intcode6) run() {
+//Run the incode machine
+func (machine *Intcode6) Run() {
 	for machine.exec() {
 		//fmt.Println(machine.pos, machine.healthcheck)
 	}
 	close(machine.output)
 }
 
-func (machine *intcode6) exec() bool {
+func (machine *Intcode6) exec() bool {
 	machine.setOperation()
 
 	//fmt.Println("opcode", machine.op)
@@ -146,7 +156,7 @@ func (machine *intcode6) exec() bool {
 	return true
 }
 
-func (machine *intcode6) setOperation() {
+func (machine *Intcode6) setOperation() {
 	opcodeCompact := machine.ops[machine.pos]
 	op := opcodeCompact % 100
 	modes := []mode{
@@ -157,7 +167,7 @@ func (machine *intcode6) setOperation() {
 	machine.op = opcode{opcode: op, modes: modes}
 }
 
-func (machine *intcode6) read(paramOffset int64) int64 {
+func (machine *Intcode6) read(paramOffset int64) int64 {
 	mode := machine.op.modes[paramOffset]
 	pos := machine.pos + paramOffset + 1
 
@@ -186,7 +196,7 @@ func (machine *intcode6) read(paramOffset int64) int64 {
 	return value
 }
 
-func (machine *intcode6) write(paramOffset, value int64) {
+func (machine *Intcode6) write(paramOffset, value int64) {
 	mode := machine.op.modes[paramOffset]
 	pos := machine.pos + paramOffset + 1
 
@@ -212,34 +222,34 @@ func (machine *intcode6) write(paramOffset, value int64) {
 
 }
 
-func (machine *intcode6) add() {
+func (machine *Intcode6) add() {
 	value1 := machine.read(0)
 	value2 := machine.read(1)
 	machine.write(2, value1+value2)
 	machine.pos += 4
 }
 
-func (machine *intcode6) mul() {
+func (machine *Intcode6) mul() {
 	value1 := machine.read(0)
 	value2 := machine.read(1)
 	machine.write(2, value1*value2)
 	machine.pos += 4
 }
 
-func (machine *intcode6) lt() {
+func (machine *Intcode6) lt() {
 	value1 := machine.read(0)
 	value2 := machine.read(1)
 	machine.write(2, bool2int64(value1 < value2))
 	machine.pos += 4
 }
-func (machine *intcode6) eq() {
+func (machine *Intcode6) eq() {
 	value1 := machine.read(0)
 	value2 := machine.read(1)
 	machine.write(2, bool2int64(value1 == value2))
 	machine.pos += 4
 }
 
-func (machine *intcode6) jmpnezero() {
+func (machine *Intcode6) jmpnezero() {
 
 	value1 := machine.read(0)
 	if value1 != 0 {
@@ -248,7 +258,7 @@ func (machine *intcode6) jmpnezero() {
 		machine.pos += 3
 	}
 }
-func (machine *intcode6) jmpeqzero() {
+func (machine *Intcode6) jmpeqzero() {
 	value1 := machine.read(0)
 	if value1 == 0 {
 		machine.pos = machine.read(1)
@@ -257,18 +267,18 @@ func (machine *intcode6) jmpeqzero() {
 	}
 }
 
-func (machine *intcode6) getInput() {
+func (machine *Intcode6) getInput() {
 	machine.write(0, <-machine.input)
 	machine.pos += 2
 }
-func (machine *intcode6) setOutput() {
+func (machine *Intcode6) setOutput() {
 	machine.healthcheck = machine.read(0)
 	//fmt.Println("healthcheck ", machine.healthcheck)
 	machine.output <- machine.healthcheck
 	machine.pos += 2
 }
 
-func (machine *intcode6) setRel() {
+func (machine *Intcode6) setRel() {
 	machine.rel += machine.read(0)
 	machine.pos += 2
 }

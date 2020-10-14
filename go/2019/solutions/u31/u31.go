@@ -1,4 +1,4 @@
-package main
+package u31
 
 import (
 	"fmt"
@@ -14,8 +14,8 @@ type pos struct {
 	w int
 }
 
-//U31 is main proxy for solve, takes a string channel
-func U31(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 
 	var steps = math.MaxInt32
 	var visited = map[int]pos{}

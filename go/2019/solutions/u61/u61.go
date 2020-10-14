@@ -1,12 +1,12 @@
-package main
+package u61
 
 import (
 	"fmt"
 	"strings"
 )
 
-//U61 is main proxy for solve, takes a string channel
-func U61(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 
 	var rel = map[string][]string{}
 

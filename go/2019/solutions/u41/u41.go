@@ -1,4 +1,4 @@
-package main
+package u41
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-//U41 is main proxy for solve, takes a string channel
-func U41(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 
 	line, _ := <-p
 	codes := strings.Split(line, "")
@@ -28,7 +28,7 @@ func U41(p chan string, s chan string) {
 loop:
 	for {
 
-		if !nextValidFormatPass(&low) {
+		if !NextValidFormatPass(&low) {
 			continue
 		}
 
@@ -44,7 +44,7 @@ loop:
 			continue
 		}
 
-		if passedPass(&low, &high) {
+		if PassedPass(&low, &high) {
 			break loop
 		}
 		valid++
@@ -53,7 +53,7 @@ loop:
 	s <- fmt.Sprintf("Solution: %d", valid)
 }
 
-func nextValidFormatPass(pass *[]int) bool {
+func NextValidFormatPass(pass *[]int) bool {
 	var carry = false
 	var c = 6
 	for {
@@ -78,7 +78,7 @@ func nextValidFormatPass(pass *[]int) bool {
 	return true
 }
 
-func passedPass(pass *[]int, other *[]int) bool {
+func PassedPass(pass *[]int, other *[]int) bool {
 	for i := range *pass {
 		p := (*pass)[i]
 		o := (*other)[i]

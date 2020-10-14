@@ -1,12 +1,12 @@
-package main
+package u82
 
 import (
 	"fmt"
 	"strings"
 )
 
-//U82 is main proxy for solve, takes a string channel
-func U82(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 	// only one line of input
 	line, _ := <-p
 

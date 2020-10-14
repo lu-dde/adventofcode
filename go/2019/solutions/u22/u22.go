@@ -1,4 +1,4 @@
-package main
+package u22
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-//U22 is main proxy for solve, takes a string channel
-func U22(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 
 	// we only expect one line.
 	line, _ := <-p

@@ -1,13 +1,15 @@
-package main
+package u92
 
 import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/lu-dde/adventofcode/solutions/u91"
 )
 
-//U92 is main proxy for solve, takes a string channel
-func U92(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 
 	// we only expect one line.
 	line, _ := <-p
@@ -26,14 +28,10 @@ func U92(p chan string, s chan string) {
 
 	input <- 2
 
-	machine := intcode6{
-		ops:    ops,
-		input:  input,
-		output: output,
-	}
+	machine := u91.NewIntcode6(ops, input, output)
 
 	go func() {
-		machine.run()
+		machine.Run()
 	}()
 
 	go func() {
