@@ -7,7 +7,7 @@ func (cs Slice) Len() int {
 	return len(cs)
 }
 func (cs Slice) Less(i, j int) bool {
-	return cs[i].less(cs[j])
+	return cs[i].Less(cs[j])
 }
 func (cs Slice) Swap(i, j int) {
 	cs[i], cs[j] = cs[j], cs[i]
