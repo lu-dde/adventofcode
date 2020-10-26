@@ -9,10 +9,12 @@ import (
 
 func main() {
 
-	solver := getSolver(os.Args[1])
-	testfile := getTestfile(os.Args[1])
-	day := os.Args[1][0]
-	part := os.Args[1][1]
+	problem := os.Args[1]
+
+	solver := getSolver(problem)
+	testfile := getTestfile(problem)
+	day := string(problem[:len(problem)-1])
+	part := string(problem[len(problem)-1])
 
 	file, err := os.Open(testfile)
 
@@ -42,7 +44,7 @@ func main() {
 	close(solutionChannel)
 
 	if ok {
-		log.Printf("Day %c Part %c '%s' in %s", day, part, solution, time.Since(start))
+		log.Printf("Day %s Part %s '%s' in %s", day, part, solution, time.Since(start))
 	}
 
 }
