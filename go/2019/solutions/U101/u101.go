@@ -14,8 +14,8 @@ func Solve(p chan string, s chan string) {
 
 	size := 40
 
-	stars := starmap{
-		chart: make(map[coord.Pair]int, size*size),
+	stars := Starmap{
+		Chart: make(map[coord.Pair]int, size*size),
 	}
 
 	/* starmap '#' is an astroid
@@ -34,19 +34,19 @@ func Solve(p chan string, s chan string) {
 	for line := range p {
 		for x, t := range line {
 			if t == '#' {
-				stars.addAstroid(asCoord(x, y))
+				stars.AddAstroid(asCoord(x, y))
 			}
 		}
 		y++
 	}
 
-	stars.setRayMap()
+	stars.SetRayMap()
 
 	if debugPrint {
-		for row := 0; row < stars.maxY; row++ {
-			for column := 0; column < stars.maxX; column++ {
+		for row := 0; row < stars.MaxY; row++ {
+			for column := 0; column < stars.MaxX; column++ {
 				ray := asCoord(row, column)
-				distance, ok := stars.rays.Get(ray)
+				distance, ok := stars.Rays.Get(ray)
 				if ok && ray == distance.Speed {
 					fmt.Print("•")
 				} else if ok {
@@ -59,20 +59,10 @@ func Solve(p chan string, s chan string) {
 		}
 		fmt.Println()
 
-		stars.printBoard()
+		stars.PrintBoard()
 	}
 
-	stars.look()
-	//stars.printBoard()
-
-	var maxCoord coord.Pair
-	maxValue := 0
-	for coord, value := range stars.chart {
-		if value > maxValue {
-			maxValue = value
-			maxCoord = coord
-		}
-	}
+	maxCoord, maxValue := stars.GetU101()
 
 	s <- fmt.Sprintf("Best is %d,%d with %d other asteroids detected.", maxCoord.X, maxCoord.Y, maxValue)
 }
@@ -81,44 +71,44 @@ func asCoord(x, y int) coord.Pair {
 	return coord.NewPair(x, y)
 }
 
-type starmap struct {
-	chart map[coord.Pair]int
-	maxX  int
-	maxY  int
-	rays  rays.Map
+type Starmap struct {
+	Chart map[coord.Pair]int
+	MaxX  int
+	MaxY  int
+	Rays  rays.Map
 }
 
-func (s *starmap) addAstroid(coord coord.Pair) {
-	s.chart[coord] = 0
+func (s *Starmap) AddAstroid(coord coord.Pair) {
+	s.Chart[coord] = 0
 	s.extend(coord)
 }
 
-func (s *starmap) extend(coord coord.Pair) {
-	if s.maxX < coord.X {
-		s.maxX = coord.X
+func (s *Starmap) extend(coord coord.Pair) {
+	if s.MaxX < coord.X {
+		s.MaxX = coord.X
 	}
-	if s.maxY < coord.Y {
-		s.maxY = coord.Y
+	if s.MaxY < coord.Y {
+		s.MaxY = coord.Y
 	}
 }
 
-func (s *starmap) setRayMap() {
-	small, large := s.maxX, s.maxY
+func (s *Starmap) SetRayMap() {
+	small, large := s.MaxX, s.MaxY
 	if small > large {
 		small, large = large, small
 	}
-	s.rays = rays.New(large)
+	s.Rays = rays.New(large)
 }
 
-func (s *starmap) look() {
-	for a := range s.chart {
+func (s *Starmap) look() {
+	for a := range s.Chart {
 		s.lookNorth(a)
 	}
 }
 
-func (s *starmap) clearPath(goal, other coord.Pair) bool {
+func (s *Starmap) clearPath(goal, other coord.Pair) bool {
 	distance, direction := goal.Distance(other)
-	ray, _ := s.rays.Get(distance)
+	ray, _ := s.Rays.Get(distance)
 	speed := ray.Speed.ChangeDirection(direction)
 
 	for {
@@ -126,7 +116,7 @@ func (s *starmap) clearPath(goal, other coord.Pair) bool {
 		if goal == other {
 			break
 		}
-		if _, ok := s.chart[other]; ok {
+		if _, ok := s.Chart[other]; ok {
 			return false
 		}
 	}
@@ -134,33 +124,46 @@ func (s *starmap) clearPath(goal, other coord.Pair) bool {
 	return true
 }
 
-func (s *starmap) lookNorth(coord coord.Pair) {
-	for a := range s.chart {
+func (s *Starmap) lookNorth(coord coord.Pair) {
+	for a := range s.Chart {
 		if (a.Y < coord.Y) || (a.Y == coord.Y && a.X < coord.X) {
 			if s.clearPath(coord, a) {
-				s.chart[coord] = s.chart[coord] + 1
-				s.chart[a] = s.chart[a] + 1
+				s.Chart[coord] = s.Chart[coord] + 1
+				s.Chart[a] = s.Chart[a] + 1
 			}
 		}
 	}
 }
 
-func (s *starmap) printBoard() {
-	if debugPrint {
-		fmt.Println()
+func (s *Starmap) GetU101() (coord.Pair, int) {
 
-		for i := 0; i < s.maxY; i++ {
-			for j := 0; j < s.maxX; j++ {
-				c := asCoord(j, i)
-				a, ok := s.chart[c]
-				if ok {
-					fmt.Printf("%4d", a)
-				} else {
-					fmt.Print("    ")
-				}
+	s.look()
+
+	var maxCoord coord.Pair
+	maxValue := 0
+	for coord, value := range s.Chart {
+		if value > maxValue {
+			maxValue = value
+			maxCoord = coord
+		}
+	}
+
+	return maxCoord, maxValue
+}
+func (s *Starmap) PrintBoard() {
+	fmt.Println("######")
+
+	for i := 0; i <= s.MaxY; i++ {
+		for j := 0; j <= s.MaxX; j++ {
+			c := asCoord(j, i)
+			a, ok := s.Chart[c]
+			if ok {
+				fmt.Printf("%3d", a)
+			} else {
+				fmt.Print("   ")
 			}
-			fmt.Println()
 		}
 		fmt.Println()
 	}
+	fmt.Println("######")
 }
