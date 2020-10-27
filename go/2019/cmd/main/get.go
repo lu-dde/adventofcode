@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/lu-dde/adventofcode/solutions/u101"
+	"github.com/lu-dde/adventofcode/solutions/u102"
 	"github.com/lu-dde/adventofcode/solutions/u11"
 	"github.com/lu-dde/adventofcode/solutions/u12"
 	"github.com/lu-dde/adventofcode/solutions/u21"
@@ -43,6 +44,7 @@ func getSolver(name string) solver {
 		"91":  u91.Solve,
 		"92":  u92.Solve,
 		"101": u101.Solve,
+		"102": u102.Solve,
 	}[name]
 
 	if !ok {
@@ -54,27 +56,29 @@ func getSolver(name string) solver {
 
 func getTestfile(name string) string {
 	textfile, ok := map[string]string{
-		"11": "input/u11.txt",
-		"12": "input/u11.txt",
-		"21": "input/u21.txt",
-		"22": "input/u21.txt",
-		"31": "input/u31.txt",
-		"41": "input/u41.txt",
-		"51": "input/u51.txt",
-		"52": "input/u51.txt",
-		"61": "input/u61.txt",
-		"62": "input/u61.txt",
-		"71": "input/u71.txt",
-		"72": "input/u71.txt",
-		"81": "input/u81.txt",
-		"82": "input/u81.txt",
-		"91": "input/u91.txt",
-		"92": "input/u91.txt",
-		//"101": "input/u101.test.1.2.35.txt",
-		//"101": "input/u101.test.5.8.33.txt",
-		//"101": "input/u101.test.6.3.41.txt",
-		//"101": "input/u101.test.11.13.210.txt",
-		"101": "input/u101.txt",
+		"11": "input/u1.txt",
+		"12": "input/u1.txt",
+		"21": "input/u2.txt",
+		"22": "input/u2.txt",
+		"31": "input/u3.txt",
+		"41": "input/u4.txt",
+		"51": "input/u5.txt",
+		"52": "input/u5.txt",
+		"61": "input/u6.txt",
+		"62": "input/u6.txt",
+		"71": "input/u7.txt",
+		"72": "input/u7.txt",
+		"81": "input/u8.txt",
+		"82": "input/u8.txt",
+		"91": "input/u9.txt",
+		"92": "input/u9.txt",
+		//"101": "input/u10.test.1.2.35.txt",
+		//"101": "input/u10.test.5.8.33.txt",
+		//"101": "input/u10.test.6.3.41.txt",
+		//"101": "input/u10.test.11.13.210.txt",
+		"101": "input/u10.txt",
+		//"102": "input/u102.test.8.3.txt",
+		"102": "input/u10.crashes.txt",
 	}[name]
 
 	if !ok {
