@@ -4,6 +4,7 @@ import (
 	"github.com/lu-dde/adventofcode/solutions/u101"
 	"github.com/lu-dde/adventofcode/solutions/u102"
 	"github.com/lu-dde/adventofcode/solutions/u11"
+	"github.com/lu-dde/adventofcode/solutions/u111"
 	"github.com/lu-dde/adventofcode/solutions/u12"
 	"github.com/lu-dde/adventofcode/solutions/u21"
 	"github.com/lu-dde/adventofcode/solutions/u22"
@@ -45,6 +46,7 @@ func getSolver(name string) solver {
 		"92":  u92.Solve,
 		"101": u101.Solve,
 		"102": u102.Solve,
+		"111": u111.Solve,
 	}[name]
 
 	if !ok {
@@ -80,6 +82,7 @@ func getTestfile(name string) string {
 		"101": "input/u10.txt",
 		"102": "input/u10.txt",
 		//"102": "input/u10.crashes.txt",
+		"111": "input/u11.txt",
 	}[name]
 
 	if !ok {
