@@ -15,7 +15,7 @@ type HullPainter struct {
 	Output    chan int64
 	Position  coord.Pair
 	Direction coord.Pair
-	Hull      map[coord.Pair]pos
+	Hull      map[coord.Pair]int64
 }
 
 // New creates a HullPainter with an internal u91.NewIntcode6 machine
@@ -23,8 +23,6 @@ func New(ops []int64) *HullPainter {
 
 	var input = make(chan int64, 1)
 	var output = make(chan int64)
-
-	//input <- 0
 
 	machine := u91.NewIntcode6(ops, input, output)
 
@@ -34,7 +32,7 @@ func New(ops []int64) *HullPainter {
 		Output:    output,
 		Position:  coordZero,
 		Direction: north,
-		Hull:      make(map[coord.Pair]pos),
+		Hull:      make(map[coord.Pair]int64),
 	}
 
 	return &hp
@@ -57,7 +55,7 @@ func (hp *HullPainter) Run() {
 
 func (hp *HullPainter) paint() {
 	for {
-		hp.Input <- hp.Hull[hp.Position].color
+		hp.Input <- hp.Hull[hp.Position]
 
 		paint, ok := <-hp.Output
 		if !ok {
@@ -66,10 +64,7 @@ func (hp *HullPainter) paint() {
 		}
 		rotateCmd := <-hp.Output
 
-		hp.Hull[hp.Position] = pos{
-			color:     paint,
-			direction: hp.Direction,
-		}
+		hp.Hull[hp.Position] = paint
 
 		hp.Direction = rotate(rotateCmd, hp.Direction)
 		hp.Position = hp.Position.Add(hp.Direction)

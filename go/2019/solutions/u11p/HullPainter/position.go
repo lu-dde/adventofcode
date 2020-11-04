@@ -10,11 +10,6 @@ var (
 	coordZero = coord.Pair{X: 0, Y: 0}
 )
 
-type pos struct {
-	color     int64
-	direction coord.Pair
-}
-
 func rotateLeft(p coord.Pair) coord.Pair {
 	switch p {
 	case north:

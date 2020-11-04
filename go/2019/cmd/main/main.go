@@ -9,14 +9,13 @@ import (
 
 func main() {
 
-	problem := os.Args[1]
+	solve := getProblem(os.Args[1])
 
-	solver := getSolver(problem)
-	testfile := getTestfile(problem)
-	day := string(problem[:len(problem)-1])
-	part := string(problem[len(problem)-1])
+	if solve == nil {
+		log.Fatalf("couldn't find problem: %s", os.Args[1])
+	}
 
-	file, err := os.Open(testfile)
+	file, err := os.Open(solve.InputFile)
 
 	if err != nil {
 		log.Fatalf("failed opening file: %s", err)
@@ -28,7 +27,7 @@ func main() {
 	problemChannel := make(chan string)
 	solutionChannel := make(chan string)
 
-	go solver(problemChannel, solutionChannel)
+	go solve.Solve(problemChannel, solutionChannel)
 
 	start := time.Now()
 
@@ -44,7 +43,7 @@ func main() {
 	close(solutionChannel)
 
 	if ok {
-		log.Printf("Day %s Part %s '%s' in %s", day, part, solution, time.Since(start))
+		log.Printf("Day %s Part %s '%s' in %s", solve.Day, solve.Part, solution, time.Since(start))
 	}
 
 }

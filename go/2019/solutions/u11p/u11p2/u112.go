@@ -1,11 +1,11 @@
-package u111
+package u11p2
 
 import (
 	"fmt"
 	"strconv"
 	"strings"
 
-	hullpainter "github.com/lu-dde/adventofcode/solutions/u111/HullPainter"
+	hullpainter "github.com/lu-dde/adventofcode/solutions/u11p/HullPainter"
 )
 
 //Solve is main proxy for solve, takes a string channel
@@ -23,6 +23,8 @@ func Solve(p chan string, s chan string) {
 	}
 
 	machine := hullpainter.New(ops)
+
+	machine.Hull[machine.Position] = 1
 
 	machine.Run()
 
