@@ -1,7 +1,6 @@
 package hullpainter
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/lu-dde/adventofcode/internal/coord"
@@ -53,21 +52,32 @@ func (hp *HullPainter) Run() {
 	wg.Wait()
 }
 
+func (hp *HullPainter) getNextCommand() (paint, rotateCmd int64, ok bool) {
+	paint, ok = <-hp.Output
+	if !ok {
+		return 0, 0, false
+	}
+	rotateCmd = <-hp.Output
+
+	return paint, rotateCmd, true
+}
+
+func (hp *HullPainter) paintStep() bool {
+	hp.Input <- hp.Hull[hp.Position]
+
+	paint, rotateCmd, ok := hp.getNextCommand()
+	if !ok {
+		return false
+	}
+
+	hp.Hull[hp.Position] = paint
+
+	hp.Direction = rotate(rotateCmd, hp.Direction)
+	hp.Position = hp.Position.Add(hp.Direction)
+
+	return true
+}
 func (hp *HullPainter) paint() {
-	for {
-		hp.Input <- hp.Hull[hp.Position]
-
-		paint, ok := <-hp.Output
-		if !ok {
-			fmt.Println("end of paint")
-			break
-		}
-		rotateCmd := <-hp.Output
-
-		hp.Hull[hp.Position] = paint
-
-		hp.Direction = rotate(rotateCmd, hp.Direction)
-		hp.Position = hp.Position.Add(hp.Direction)
-
+	for hp.paintStep() {
 	}
 }
