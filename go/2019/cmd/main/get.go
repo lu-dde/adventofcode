@@ -77,8 +77,8 @@ func getTestfile(name string) string {
 		//"101": "input/u10.test.6.3.41.txt",
 		//"101": "input/u10.test.11.13.210.txt",
 		"101": "input/u10.txt",
-		//"102": "input/u102.test.8.3.txt",
-		"102": "input/u10.crashes.txt",
+		"102": "input/u10.txt",
+		//"102": "input/u10.crashes.txt",
 	}[name]
 
 	if !ok {
