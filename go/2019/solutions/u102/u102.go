@@ -35,7 +35,7 @@ func Solve(p chan string, s chan string) {
 		row++
 	}
 
-	laser := LaserMap{
+	laser := laserMap{
 		Looks: stars,
 	}
 
@@ -47,13 +47,13 @@ func Solve(p chan string, s chan string) {
 	s <- fmt.Sprintf("The 200th asteroid to be vaporized is at (%d,%d) with score %d", a.target.X, a.target.Y, a.target.X*100+a.target.Y)
 }
 
-type LaserMap struct {
+type laserMap struct {
 	Looks   u101.Starmap
 	Station coord.Pair
 	Targets laserSlice
 }
 
-func (l *LaserMap) Init() {
+func (l *laserMap) Init() {
 	l.Looks.SetRayMap()
 	l.Station, _ = l.Looks.GetU101()
 
@@ -64,13 +64,13 @@ func (l *LaserMap) Init() {
 	sort.Stable(l.Targets)
 }
 
-func (l *LaserMap) Fire() {
+func (l *laserMap) Fire() {
 	for target := range l.Looks.Chart {
 		l.LaserDistance(target)
 	}
 }
 
-func (l *LaserMap) LaserDistance(target coord.Pair) {
+func (l *laserMap) LaserDistance(target coord.Pair) {
 	origin := target
 	if origin == l.Station {
 		return
