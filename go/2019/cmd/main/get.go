@@ -62,6 +62,7 @@ func getTestfile(name string) string {
 		"22": "input/u2.txt",
 		"31": "input/u3.txt",
 		"41": "input/u4.txt",
+		"42": "input/u4.test.1955.txt",
 		"51": "input/u5.txt",
 		"52": "input/u5.txt",
 		"61": "input/u6.txt",
