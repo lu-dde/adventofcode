@@ -45,6 +45,7 @@ type V6 struct {
 	input       chan int64
 	output      chan int64
 	op          opcode
+	Waiting     bool
 }
 
 //New intcode V6 init with needed fields
@@ -209,8 +210,10 @@ func (machine *V6) jmpeqzero() {
 }
 
 func (machine *V6) getInput() {
+	machine.Waiting = true
 	machine.write(0, <-machine.input)
 	machine.pos += 2
+	machine.Waiting = false
 }
 func (machine *V6) setOutput() {
 	machine.healthcheck = machine.read(0)

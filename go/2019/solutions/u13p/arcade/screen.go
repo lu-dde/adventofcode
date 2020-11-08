@@ -14,11 +14,11 @@ import (
 4 is a ball tile. The ball moves diagonally and bounces off objects.
 */
 var printMap = map[int]string{
-	0: " ",
-	1: "█",
-	2: "░",
-	3: "—",
-	4: "•",
+	objVoid:   " ",
+	objWall:   "█",
+	objBlock:  "░",
+	objPaddle: "—",
+	objBall:   "•",
 }
 
 //Screen representation
@@ -67,7 +67,7 @@ func asPrint(o int) string {
 func (sc *Screen) CountBlocks() int {
 	count := 0
 	for _, oid := range sc.objects {
-		if oid == 2 {
+		if oid == objBlock {
 			count++
 		}
 	}

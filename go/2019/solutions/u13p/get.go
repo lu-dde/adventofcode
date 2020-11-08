@@ -22,6 +22,13 @@ func Problems() []solver.Problem {
 			Solve:     p1.Solve,
 			InputFile: inputPath + "/input.txt",
 		},
+		solver.Problem{
+			Key:       day + "p2",
+			Day:       day,
+			Part:      "2",
+			Solve:     p2.Solve,
+			InputFile: inputPath + "/input.txt",
+		},
 	}
 
 	return solvers
