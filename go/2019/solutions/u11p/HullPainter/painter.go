@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/lu-dde/adventofcode/internal/coord"
-	"github.com/lu-dde/adventofcode/solutions/u91"
+	"github.com/lu-dde/adventofcode/solutions/u9p/u91"
 )
 
 // HullPainter u111

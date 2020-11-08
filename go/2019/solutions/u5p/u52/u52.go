@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/lu-dde/adventofcode/solutions/u51"
+	"github.com/lu-dde/adventofcode/solutions/u5p/u51"
 )
 
 //Solve is main proxy for solve, takes a string channel

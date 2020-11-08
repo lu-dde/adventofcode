@@ -1,11 +1,12 @@
-package u71
+package u72
 
 import (
 	"fmt"
 	"strconv"
 	"strings"
 
-	"github.com/lu-dde/adventofcode/solutions/u51"
+	"github.com/lu-dde/adventofcode/solutions/u5p/u51"
+	"github.com/lu-dde/adventofcode/solutions/u7p/u71"
 )
 
 //Solve is main proxy for solve, takes a string channel
@@ -22,56 +23,53 @@ func Solve(p chan string, s chan string) {
 		ops = append(ops, i)
 	}
 
-	perms := MakeAmpPerms([]int{0, 1, 2, 3, 4})
+	perms := u71.MakeAmpPerms([]int{5, 6, 7, 8, 9})
 
 	var winnerCFG []int
 	var winnerB = 0
 	for _, cfg := range perms {
-		var buffer = 0
-		for _, c := range cfg {
-			buffer = opscode4(ops, []int{c, buffer})
+
+		var feed = map[int](chan int){}
+		var cps = map[int]([]int){}
+		for index := 0; index < 5; index++ {
+			feed[index] = make(chan int)
+			cps[index] = make([]int, len(ops))
+			copy(cps[index], ops)
 		}
-		if winnerB < buffer {
-			winnerB = buffer
-			winnerCFG = cfg
-			fmt.Println(cfg, buffer)
+
+		var feedback = make(chan int)
+
+		go opscode5(feed[0], feed[1], cps[0], 0)
+		go opscode5(feed[1], feed[2], cps[1], 1)
+		go opscode5(feed[2], feed[3], cps[2], 2)
+		go opscode5(feed[3], feed[4], cps[3], 3)
+		go opscode5(feed[4], feedback, cps[4], 4)
+
+		for index := 0; index < 5; index++ {
+			feed[index] <- cfg[index]
 		}
+
+		feed[0] <- 0 // init first buffer
+
+		go func(cfg []int) {
+			for {
+				f, ok := <-feedback
+				if ok {
+					if winnerB < f {
+						winnerB = f
+						winnerCFG = cfg
+					}
+					feed[0] <- f
+				}
+			}
+		}(cfg)
 	}
 
 	s <- fmt.Sprint("Solution: ", winnerB, winnerCFG)
 
 }
 
-//MakeAmpPerms amplification permutaions
-func MakeAmpPerms(arr []int) [][]int {
-	var helper func([]int, int)
-	res := [][]int{}
-
-	helper = func(arr []int, n int) {
-		if n == 1 {
-			tmp := make([]int, len(arr))
-			copy(tmp, arr)
-			res = append(res, tmp)
-		} else {
-			for i := 0; i < n; i++ {
-				helper(arr, n-1)
-				if n%2 == 1 {
-					tmp := arr[i]
-					arr[i] = arr[n-1]
-					arr[n-1] = tmp
-				} else {
-					tmp := arr[0]
-					arr[0] = arr[n-1]
-					arr[n-1] = tmp
-				}
-			}
-		}
-	}
-	helper(arr, len(arr))
-	return res
-}
-
-func opscode4(ops []int, phaseSettings []int) int {
+func opscode5(input chan int, output chan int, ops []int, id int) {
 	var healthcheck = 0
 	var pos = 0
 
@@ -101,11 +99,19 @@ oploop:
 			ops[ops[pos3]] = u51.GetOpsValue(p1Mode, &ops, pos1) * u51.GetOpsValue(p2Mode, &ops, pos2)
 			pos += 4
 		case 3:
-			ops[ops[pos1]] = phaseSettings[0]
-			phaseSettings = phaseSettings[1:]
+			in, ok := <-input
+			if ok {
+				ops[ops[pos1]] = in
+				//fmt.Println(id, " got input ", ops[ops[pos1]])
+			} else {
+				fmt.Println(id, " input chan FAILED")
+				break
+			}
 			pos += 2
 		case 4:
 			healthcheck = u51.GetOpsValue(p1Mode, &ops, pos1)
+			//fmt.Println(id, " sending ", healthcheck)
+			output <- healthcheck
 			pos += 2
 		case 5:
 			if u51.GetOpsValue(p1Mode, &ops, pos1) != 0 {
@@ -126,12 +132,13 @@ oploop:
 			ops[ops[pos3]] = bool2int(u51.GetOpsValue(p1Mode, &ops, pos1) == u51.GetOpsValue(p2Mode, &ops, pos2))
 			pos += 4
 		default:
+			fmt.Println(id, pos, "opcode", opcodeCompact, opcode, p1Mode, p2Mode)
 			panic("unkown opcode")
 		}
 
 	}
-
-	return healthcheck
+	//fmt.Println(id, " closing opcode ", healthcheck)
+	close(output)
 }
 
 func bool2int(b bool) int {

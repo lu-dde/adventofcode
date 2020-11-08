@@ -5,7 +5,7 @@ import (
 	"sort"
 
 	"github.com/lu-dde/adventofcode/internal/coord"
-	"github.com/lu-dde/adventofcode/solutions/u101"
+	"github.com/lu-dde/adventofcode/solutions/u10p/u101"
 )
 
 //Solve U102
