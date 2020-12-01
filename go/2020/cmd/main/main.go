@@ -43,7 +43,7 @@ func main() {
 	close(solutionChannel)
 
 	if ok {
-		log.Printf("Day %s Part %s '%s' in %s", solve.Day, solve.Part, solution, time.Since(start))
+		log.Printf("2020 Day %s Part %s '%s' in %s", solve.Day, solve.Part, solution, time.Since(start))
 	}
 
 }
