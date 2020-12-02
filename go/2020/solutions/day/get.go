@@ -18,14 +18,14 @@ func Problems() []solver.Problem {
 			Key:       day + "p1",
 			Day:       day,
 			Part:      "1",
-			Solve:     p1.Solve1,
+			Solve:     p1.Solve,
 			InputFile: path + "/input.txt",
 		},
 		{
 			Key:       day + "p2",
 			Day:       day,
 			Part:      "2",
-			Solve:     p2.Solve2,
+			Solve:     p2.Solve,
 			InputFile: path + "/input.txt",
 		},
 	}

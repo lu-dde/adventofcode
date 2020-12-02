@@ -5,8 +5,8 @@ import (
 	"strconv"
 )
 
-//Solve2 is main proxy for solve, takes a string channel
-func Solve2(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 	var t = 0
 
 	for {

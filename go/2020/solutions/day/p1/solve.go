@@ -5,8 +5,8 @@ import (
 	"strconv"
 )
 
-//Solve1 is main proxy for solve, takes a string channel
-func Solve1(p chan string, s chan string) {
+//Solve is main proxy for solve, takes a string channel
+func Solve(p chan string, s chan string) {
 	var t = 0
 
 	var want map[int]int = make(map[int]int, 200)
