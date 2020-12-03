@@ -22,11 +22,25 @@ func Problems() []solver.Problem {
 			InputFile: path + "/input.txt",
 		},
 		{
+			Key:       day + "p1t1",
+			Day:       day,
+			Part:      "1",
+			Solve:     p1.Solve,
+			InputFile: path + "/test.2.336.txt",
+		},
+		{
 			Key:       day + "p2",
 			Day:       day,
 			Part:      "2",
 			Solve:     p2.Solve,
 			InputFile: path + "/input.txt",
+		},
+		{
+			Key:       day + "p2t1",
+			Day:       day,
+			Part:      "2",
+			Solve:     p2.Solve,
+			InputFile: path + "/test.2.336.txt",
 		},
 	}
 
