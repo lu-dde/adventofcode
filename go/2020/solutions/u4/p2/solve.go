@@ -2,6 +2,8 @@ package p2
 
 import (
 	"fmt"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -36,6 +38,52 @@ func Solve(input chan string, s chan string) {
 }
 
 func check(m map[string]string) bool {
-	l := len(m)
-	return l == 8 || (l == 7 && m["cid"] == "")
+	checks := 0
+	if yearCheck(m["byr"], 1920, 2002) {
+		checks++
+	}
+	if yearCheck(m["iyr"], 2010, 2020) {
+		checks++
+	}
+	if yearCheck(m["eyr"], 2020, 2030) {
+		checks++
+	}
+
+	if hgt := m["hgt"]; hgt != "" {
+		l := len(hgt)
+		hgtInt := hgt[0 : l-2]
+		hgtUnit := hgt[l-2:]
+
+		if hgtUnit == "in" {
+			if yearCheck(hgtInt, 59, 76) {
+				checks++
+			}
+		} else if hgtUnit == "cm" {
+			if yearCheck(hgtInt, 150, 193) {
+				checks++
+			}
+		}
+	}
+
+	if patternCheck(m["hcl"], `^#[a-f0-9]{6}$`) {
+		checks++
+	}
+	if patternCheck(m["ecl"], `^(amb|blu|brn|gry|grn|hzl|oth)$`) {
+		checks++
+	}
+	if patternCheck(m["pid"], `^[0-9]{9}$`) {
+		checks++
+	}
+
+	//fmt.Println(m, checks)
+	return checks == 7
+}
+
+func yearCheck(s string, q, p int) bool {
+	i, _ := strconv.Atoi(s)
+	return i >= q && i <= p
+}
+func patternCheck(s string, p string) bool {
+	matched, _ := regexp.MatchString(p, s)
+	return matched
 }
