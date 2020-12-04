@@ -2,27 +2,40 @@ package p1
 
 import (
 	"fmt"
-	"strconv"
+	"strings"
 )
 
 //Solve is main proxy for solve, takes a string channel
-func Solve(p chan string, s chan string) {
+func Solve(input chan string, s chan string) {
 	var t = 0
 
-	var want map[int]int = make(map[int]int, 200)
+	last := map[string]string{}
 
-	for line := range p {
-		i, _ := strconv.Atoi(line)
+	for line := range input {
+		if line == "" {
+			if check(last) {
+				t++
+			}
+			last = make(map[string]string)
+			continue
+		}
 
-		if want[i] > 0 {
-			t = want[i] * i
-			fmt.Println(want[i], "*", i, "=", want[i]*i)
-		} else {
-			want[2020-i] = i
-			fmt.Println("add want", 2020-i, "from", i)
-
+		for _, kv := range strings.Fields(line) {
+			kvs := strings.Split(kv, ":")
+			key := kvs[0]
+			value := kvs[1]
+			last[key] = value
 		}
 	}
 
+	if check(last) {
+		t++
+	}
+
 	s <- fmt.Sprintf("Solution: %d", t)
+}
+
+func check(m map[string]string) bool {
+	l := len(m)
+	return l == 8 || (l == 7 && m["cid"] == "")
 }

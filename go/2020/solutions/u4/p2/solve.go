@@ -2,32 +2,40 @@ package p2
 
 import (
 	"fmt"
-	"strconv"
+	"strings"
 )
 
 //Solve is main proxy for solve, takes a string channel
-func Solve(p chan string, s chan string) {
+func Solve(input chan string, s chan string) {
 	var t = 0
 
-	for {
-		line, ok := <-p
-		if ok {
-			i, _ := strconv.Atoi(line)
-			t += getFuel(i)
-		} else {
-			break
+	last := map[string]string{}
+
+	for line := range input {
+		if line == "" {
+			if check(last) {
+				t++
+			}
+			last = make(map[string]string)
+			continue
 		}
+
+		for _, kv := range strings.Fields(line) {
+			kvs := strings.Split(kv, ":")
+			key := kvs[0]
+			value := kvs[1]
+			last[key] = value
+		}
+	}
+
+	if check(last) {
+		t++
 	}
 
 	s <- fmt.Sprintf("Solution: %d", t)
 }
 
-func getFuel(i int) int {
-	if i < 9 {
-		return 0
-	}
-
-	r := i/3 - 2
-	return r + getFuel(r)
-
+func check(m map[string]string) bool {
+	l := len(m)
+	return l == 8 || (l == 7 && m["cid"] == "")
 }
