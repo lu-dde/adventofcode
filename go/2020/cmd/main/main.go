@@ -24,7 +24,7 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
 
-	problemChannel := make(chan string)
+	problemChannel := make(chan string, 2000)
 	solutionChannel := make(chan string)
 
 	go solve.Solve(problemChannel, solutionChannel)
