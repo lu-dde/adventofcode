@@ -2,33 +2,37 @@ package p2
 
 import (
 	"fmt"
+	"math"
 )
 
 //Solve is main proxy for solve, takes a string channel
 func Solve(p chan string, s chan string) {
-	var t = 0
+
+	var total float64 = 0
+	var min float64 = math.Inf(0)
+	var max float64 = 0
+	var nr float64 = 1
 
 	for line := range p {
-		row := 0
-		col := 0
-		for i := 0; i < 7; i++ {
-			row <<= 1
-			if line[i] == 'B' {
-				row++
-			}
-		}
-		for i := 0; i < 3; i++ {
-			col <<= 1
-			if line[i+7] == 'R' {
-				col++
+		seatID := 0
+		for i := 0; i < 10; i++ {
+			seatID <<= 1
+			c := line[i]
+			if c == 'B' || c == 'R' {
+				seatID++
 			}
 		}
 
-		v := row*8 + col
-		if t < v {
-			t = v
-		}
+		//fmt.Println(seatID, line)
+		fid := float64(seatID)
+		total += fid
+		min = math.Min(fid, min)
+		max = math.Max(fid, max)
+		nr++
+		//fmt.Println(seatID)
 	}
 
-	s <- fmt.Sprintf("Solution: %d", t)
+	//fmt.Println("(", min, "+", max, ") *", nr, "/", 2, "-", total, "=", (min+max)*nr/2-total)
+
+	s <- fmt.Sprintf("Solution: %.0f", (min+max)*nr/2-total)
 }
