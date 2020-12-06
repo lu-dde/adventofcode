@@ -7,6 +7,7 @@ import (
 	"github.com/lu-dde/adventofcode/solutions/u3"
 	"github.com/lu-dde/adventofcode/solutions/u4"
 	"github.com/lu-dde/adventofcode/solutions/u5"
+	"github.com/lu-dde/adventofcode/solutions/u6"
 )
 
 //GetProblem fetch a problem
@@ -18,6 +19,7 @@ func getProblem(name string) *solver.Problem {
 	solvers = append(solvers, u3.Problems()...)
 	solvers = append(solvers, u4.Problems()...)
 	solvers = append(solvers, u5.Problems()...)
+	solvers = append(solvers, u6.Problems()...)
 
 	for _, p := range solvers {
 		if name == p.Key {
