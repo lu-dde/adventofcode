@@ -12,14 +12,11 @@ func Solve(p chan string, s chan string) {
 
 	bags := map[string]map[string]int{}
 
-	containedBy := map[string][]string{}
-
 	for line := range p {
 		contain := strings.Split(line, " bags contain ")
 		color := contain[0]
 		containsString := contain[1]
 		if containsString != "no other bags." {
-			//fmt.Println(color)
 			containsArr := strings.Fields(containsString)
 
 			contains := map[string]int{}
@@ -27,12 +24,9 @@ func Solve(p chan string, s chan string) {
 				nr, _ := strconv.Atoi(containsArr[i])
 				col := containsArr[i+1] + " " + containsArr[i+2]
 				contains[col] = nr
-				containedBy[col] = append(containedBy[col], color)
 			}
 
 			bags[color] = contains
-
-			//fmt.Println("", contains)
 		}
 
 	}
@@ -44,7 +38,6 @@ func Solve(p chan string, s chan string) {
 
 	parents := []string{"shiny gold"}
 
-	count := map[string]bool{}
 	for {
 		if index == len(parents) {
 			break
@@ -52,20 +45,17 @@ func Solve(p chan string, s chan string) {
 
 		parent := parents[index]
 
-		count[parent] = true
-
-		moreParents := containedBy[parent]
+		for bag, amount := range bags[parent] {
+			for i := 0; i < amount; i++ {
+				parents = append(parents, bag)
+			}
+		}
 
 		index++
-
-		parents = append(parents, moreParents...)
-
-		//fmt.Println(len(count), parent, "is contained by:", strings.Join(moreParents, ","))
-
 	}
-	//fmt.Println(len(count), count)
+	//fmt.Println(len(parents), parents)
 
-	t = len(count) - 1
+	t = len(parents) - 1
 
 	s <- fmt.Sprintf("Solution: %d", t)
 }
