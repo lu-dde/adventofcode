@@ -1,4 +1,6 @@
 ```
+* f8cebbe 2020 Day 7 Part 2 'Solution: 421550' in 48.756997ms
+* ca368a4 2020 Day 7 Part 1 'Solution: 233' in 905.458µs
 * ccfd7e1 2020 Day 6 Part 2 'Solution: 3628' in 1.46073ms
 * 8f44639 2020 Day 6 Part 1 'Solution: 7110' in 444.64µs
 * fb5158a 2020 Day 5 Part 2 'Solution: 603' in 195.428µs
