@@ -1,144 +1,59 @@
 package p2
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
-	"strings"
+
+	"github.com/lu-dde/adventofcode/internal/handheld"
+	"github.com/lu-dde/adventofcode/internal/ops"
 )
-
-const (
-	nop = "nop"
-	jmp = "jmp"
-	acc = "acc"
-)
-
-type ops struct {
-	cmd    string
-	amount int
-	called int
-}
-
-func newOps(line string) ops {
-	cc := strings.Fields(line)
-	i, _ := strconv.Atoi(cc[1])
-	return ops{
-		cmd:    cc[0],
-		amount: i,
-	}
-}
-
-type console struct {
-	ops  []ops
-	pos  int
-	acc  int
-	fin  int
-	exit bool
-}
-
-func (c *console) exec() (bool, error) {
-	more, err := c.hasNext()
-
-	if !more {
-		return more, err
-	}
-
-	current := &c.ops[c.pos]
-	current.called++
-
-	switch current.cmd {
-	case nop:
-		c.pos++
-	case acc:
-		c.acc += current.amount
-		c.pos++
-	case jmp:
-		c.pos += current.amount
-	}
-	return c.hasNext()
-}
-
-func (c *console) hasNext() (bool, error) {
-	if c.pos == c.fin {
-		c.exit = true
-		return false, nil
-	}
-	if c.pos > c.fin {
-		c.exit = true
-		return false, errors.New("out of bounds")
-	}
-	return true, nil
-}
-
-func getConsole(input <-chan string) console {
-	ops := []ops{}
-
-	for line := range input {
-		ops = append(ops, newOps(line))
-	}
-
-	return console{
-		ops: ops,
-		fin: len(ops),
-	}
-}
 
 //Solve is main proxy for solve, takes a string channel
 func Solve(p chan string, s chan string) {
 	var t = 0
 
-	origin := getConsole(p)
+	origin := handheld.GetConsole(p)
 
-	opsLen := len(origin.ops)
+	opsLen := len(origin.Ops)
 
-	machines := []*console{&origin}
+	machines := []*handheld.Console{&origin}
 
-	for i, o := range origin.ops {
-		if o.cmd == nop && o.amount != 0 {
-			c := make([]ops, opsLen)
-			copy(c, origin.ops)
-			c[i] = ops{
-				cmd:    jmp,
-				amount: o.amount,
+	for i, o := range origin.Ops {
+		if o.Action == ops.NOP && o.Amount != 0 {
+			c := make([]ops.Cmd, opsLen)
+			copy(c, origin.Ops)
+			c[i] = ops.Cmd{
+				Action: ops.JMP,
+				Amount: o.Amount,
 			}
-			machines = append(machines, &console{
-				ops: c,
-				fin: origin.fin,
+			machines = append(machines, &handheld.Console{
+				Ops: c,
+				Fin: origin.Fin,
 			})
 		}
-		if o.cmd == jmp {
-			c := make([]ops, opsLen)
-			copy(c, origin.ops)
-			c[i] = ops{
-				cmd:    nop,
-				amount: o.amount,
+		if o.Action == ops.JMP {
+			c := make([]ops.Cmd, opsLen)
+			copy(c, origin.Ops)
+			c[i] = ops.Cmd{
+				Action: ops.NOP,
+				Amount: o.Amount,
 			}
-			machines = append(machines, &console{
-				ops: c,
-				fin: origin.fin,
+			machines = append(machines, &handheld.Console{
+				Ops: c,
+				Fin: origin.Fin,
 			})
 		}
 	}
 
 outer:
 	for {
-		//fmt.Println("step")
 		for _, c := range machines {
-			more, err := c.exec()
+			more, err := c.Exec()
 			if !more && err == nil {
-				t = c.acc
+				t = c.Acc
 				break outer
 			}
 		}
-		//fmt.Println()
-
 	}
-
-	/*
-		for _, c := range machines {
-			fmt.Println(c.exit, c.pos, c.fin, c.acc)
-		}
-	*/
 
 	s <- fmt.Sprintf("Solution: %d", t)
 }
