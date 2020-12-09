@@ -26,7 +26,7 @@ func Problems() []solver.Problem {
 			Day:       day,
 			Part:      "1",
 			Solve:     p1.Solve,
-			InputFile: path + "/short.txt",
+			InputFile: path + "/test.1.127.txt",
 		},
 		{
 			Key:       day + "p2",
