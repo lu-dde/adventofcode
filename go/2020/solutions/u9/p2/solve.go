@@ -5,43 +5,46 @@ import (
 	"strconv"
 )
 
+//var weaknessPos int = 14
+
+var weaknessPos int = 659
+
 //Solve is main proxy for solve, takes a string channel
 func Solve(p chan string, s chan string) {
-	var t int64 = 0
+	var t uint64 = 0
 
-	rulesLength := 25
-	loop := make([]int64, rulesLength)
+	length := weaknessPos + 1
+	loop := make([]uint64, length)
 	for i := range loop {
-		v, _ := strconv.ParseInt(<-p, 10, 64)
+		v, _ := strconv.ParseUint(<-p, 10, 64)
 		loop[i] = v
 	}
 
-	pos := 0
+	//	fmt.Println(loop)
+	var weakness uint64 = loop[weaknessPos]
 
-	for line := range p {
-		v, _ := strconv.ParseInt(line, 10, 64)
+outer:
+	for i := 0; i < length; i++ {
+		sum := loop[i]
+		min := sum
+		max := sum
 
-		//check
-		if !sumOf2(v, loop) {
-			t = v
-			break
+		for j := i + 1; j < length; j++ {
+			cur := loop[j]
+			sum += cur
+			if min > cur {
+				min = cur
+			}
+			if max < cur {
+				max = cur
+			}
+			if sum == weakness {
+				t = min + max
+				break outer
+			}
 		}
 
-		//save value and increment position
-		loop[pos%rulesLength] = v
-		pos++
 	}
 
 	s <- fmt.Sprintf("Solution: %d", t)
-}
-
-func sumOf2(sum int64, list []int64) bool {
-	for i := 0; i < len(list); i++ {
-		for j := i + 1; j < len(list); j++ {
-			if list[i]+list[j] == sum {
-				return true
-			}
-		}
-	}
-	return false
 }

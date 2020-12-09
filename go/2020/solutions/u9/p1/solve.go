@@ -32,6 +32,8 @@ func Solve(p chan string, s chan string) {
 		pos++
 	}
 
+	fmt.Println(pos+5, t)
+
 	s <- fmt.Sprintf("Solution: %d", t)
 }
 
