@@ -2,6 +2,7 @@ package p2
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 )
 
@@ -9,25 +10,31 @@ import (
 func Solve(p chan string, s chan string) {
 	var t = 0
 
-	for {
-		line, ok := <-p
-		if ok {
-			i, _ := strconv.Atoi(line)
-			t += getFuel(i)
+	volts := []int{}
+
+	for line := range p {
+		v, _ := strconv.Atoi(line)
+		volts = append(volts, v)
+	}
+
+	sort.Ints(volts)
+
+	diffs := []int{0, 0, 0, 1}
+
+	current := 0
+	for _, voltage := range volts {
+		if voltage < current+4 {
+			diffs[voltage-current]++
+			current = voltage
 		} else {
+			fmt.Println("break", current, voltage)
 			break
 		}
 	}
 
+	fmt.Println(diffs)
+
+	t = diffs[1] * diffs[3]
+
 	s <- fmt.Sprintf("Solution: %d", t)
-}
-
-func getFuel(i int) int {
-	if i < 9 {
-		return 0
-	}
-
-	r := i/3 - 2
-	return r + getFuel(r)
-
 }
