@@ -8,9 +8,9 @@ import (
 
 //Solve is main proxy for solve, takes a string channel
 func Solve(p chan string, s chan string) {
-	var t = 0
+	var t int64 = 0
 
-	volts := []int{}
+	volts := []int{0}
 
 	for line := range p {
 		v, _ := strconv.Atoi(line)
@@ -19,22 +19,33 @@ func Solve(p chan string, s chan string) {
 
 	sort.Ints(volts)
 
-	diffs := []int{0, 0, 0, 1}
-
 	current := 0
 	for _, voltage := range volts {
 		if voltage < current+4 {
-			diffs[voltage-current]++
 			current = voltage
-		} else {
-			fmt.Println("break", current, voltage)
-			break
+		}
+	}
+	fmt.Println("break", current)
+
+	vlen := len(volts)
+
+	//        	 steps nr-of-paths
+	tree := make([]int64, vlen)
+
+	tree[0] = 1
+
+	for i := 0; i < vlen; i++ {
+		volt := volts[i]
+		paths := tree[i]
+		for j := i + 1; j < i+4 && j < vlen; j++ {
+			volt2 := volts[j]
+			if volt2 < volt+4 {
+				tree[j] += paths
+			}
 		}
 	}
 
-	fmt.Println(diffs)
-
-	t = diffs[1] * diffs[3]
+	t = tree[vlen-1]
 
 	s <- fmt.Sprintf("Solution: %d", t)
 }
