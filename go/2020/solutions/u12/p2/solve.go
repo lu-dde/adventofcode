@@ -10,66 +10,42 @@ import (
 func Solve(p chan string, s chan string) {
 	var t = 0
 
-	x := 0.0
-	y := 0.0
-
-	var dir byte = 'E'
+	x, y := 0, 0
+	wx, wy := 10, 1
 
 	for line := range p {
 		d := line[0]
-		i, _ := strconv.ParseFloat(line[1:], 64)
+		amount, _ := strconv.Atoi(line[1:])
 
 		switch d {
 		case 'F':
-			d = dir
+			x, y = x+(wx*amount), y+(wy*amount)
 		case 'L':
-			dir = right(dir, 360-i)
-			d = dir
-			i = 0
+			wx, wy = right(wx, wy, 360-amount)
 		case 'R':
-			dir = right(dir, i)
-			d = dir
-			i = 0
+			wx, wy = right(wx, wy, amount)
+		case 'N':
+			wy += amount
+		case 'S':
+			wy -= amount
+		case 'E':
+			wx += amount
+		case 'W':
+			wx -= amount
 		}
-
-		x, y = move(d, i, x, y)
 
 	}
 
-	t = int(math.Abs(x) + math.Abs(y))
+	t = int(math.Abs(float64(x)) + math.Abs(float64(y)))
 
 	s <- fmt.Sprintf("Solution: %d", t)
 }
 
-func right(d byte, deg float64) byte {
+func right(x, y, deg int) (int, int) {
 	t := int(deg / 90)
 
 	for i := 0; i < t; i++ {
-		switch d {
-		case 'N':
-			d = 'E'
-		case 'E':
-			d = 'S'
-		case 'S':
-			d = 'W'
-		case 'W':
-			d = 'N'
-		}
-	}
-
-	return d
-}
-
-func move(d byte, i, x, y float64) (float64, float64) {
-	switch d {
-	case 'N':
-		x += i
-	case 'S':
-		x -= i
-	case 'W':
-		y -= i
-	case 'E':
-		y += i
+		x, y = y, x*-1
 	}
 
 	return x, y
