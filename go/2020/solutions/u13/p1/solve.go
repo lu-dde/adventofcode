@@ -2,27 +2,45 @@ package p1
 
 import (
 	"fmt"
+	"math"
 	"strconv"
+	"strings"
 )
 
 //Solve is main proxy for solve, takes a string channel
 func Solve(p chan string, s chan string) {
 	var t = 0
 
-	var want map[int]int = make(map[int]int, 200)
+	timeStr := <-p
+	bussesStr := <-p
 
-	for line := range p {
-		i, _ := strconv.Atoi(line)
+	time, _ := strconv.Atoi(timeStr)
 
-		if want[i] > 0 {
-			t = want[i] * i
-			fmt.Println(want[i], "*", i, "=", want[i]*i)
-		} else {
-			want[2020-i] = i
-			fmt.Println("add want", 2020-i, "from", i)
+	busses := []int{}
 
+	for _, bidStr := range strings.Split(bussesStr, ",") {
+		bid, err := strconv.Atoi(bidStr)
+		if err != nil {
+			bid = math.MaxInt64
+		}
+		busses = append(busses, bid)
+	}
+
+	fmt.Println(time)
+	fmt.Println(bussesStr)
+	//fmt.Println(busses)
+
+	min := math.MaxInt64
+	id := 0
+	for _, d := range busses {
+		diff := (d*(time/d) - time + d)
+		if diff < min {
+			min = diff
+			id = d
 		}
 	}
+
+	t = min * id
 
 	s <- fmt.Sprintf("Solution: %d", t)
 }
