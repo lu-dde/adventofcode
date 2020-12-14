@@ -1,4 +1,6 @@
 ```
+* d33b198 2020 Day 13 Part 2 'Solution: 1058443396696792' in 59.981µs
+* ca59bdb 2020 Day 13 Part 1 'Solution: 2215' in 68.581µs
 * 629b9c1 2020 Day 12 Part 2 'Solution: 46530' in 138.461µs
 * 6d5eae8 2020 Day 12 Part 1 'Solution: 1177' in 136.518µs
 * f8954c3 2020 Day 11 Part 2 'Solution: 2013' in 214.738866ms
