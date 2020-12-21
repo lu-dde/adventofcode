@@ -24,23 +24,28 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
 
-	problemChannel := make(chan string, 2000)
-	solutionChannel := make(chan string)
+	input := []string{}
+	for scanner.Scan() {
+		line := scanner.Text()
+		input = append(input, line)
+	}
 
-	go solve.Solve(problemChannel, solutionChannel)
+	problemChannel := make(chan string, len(input))
+	solutionChannel := make(chan string, 1)
+
+	for _, i := range input {
+		problemChannel <- i
+	}
 
 	start := time.Now()
 
-	for scanner.Scan() {
-		line := scanner.Text()
-		problemChannel <- line
-	}
-	close(problemChannel)
+	go solve.Solve(problemChannel, solutionChannel)
 
-	file.Close()
+	close(problemChannel)
 
 	solution, ok := <-solutionChannel
 	close(solutionChannel)
+	file.Close()
 
 	if ok {
 		log.Printf("2020 Day %s Part %s '%s' in %s", solve.Day, solve.Part, solution, time.Since(start))
