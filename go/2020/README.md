@@ -1,4 +1,6 @@
 ```
+* dc3203d 2020 Day 18 Part 2 'Solution: 169899524778212' in 1.737227ms
+* a4ca374 2020 Day 18 Part 1 'Solution: 21022630974613' in 1.463255ms
 * 139d911 2020 Day 17 Part 2 'Solution: 2332' in 30.211981ms
 * d6a74e1 2020 Day 17 Part 1 'Solution: 380' in 2.522809ms
 * ec5b0b4 2020 Day 16 Part 2 'Solution: 1305243193339' in 1.637885ms
