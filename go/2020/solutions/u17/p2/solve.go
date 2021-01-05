@@ -8,7 +8,7 @@ const intActive uint8 = 128
 func Solve(p chan string, s chan string) {
 	var t = 0
 
-	cw := cw3d{
+	cw := cw4d{
 		cubes: make(map[Dim]uint8, 128),
 	}
 
@@ -30,7 +30,7 @@ func Solve(p chan string, s chan string) {
 	s <- fmt.Sprintf("Solution: %d", t)
 }
 
-//Dim 3d space
+//Dim 4d space
 type Dim struct {
 	X int
 	Y int
@@ -38,12 +38,12 @@ type Dim struct {
 	W int
 }
 
-type cw3d struct {
+type cw4d struct {
 	cubes map[Dim]uint8
 	cycle int
 }
 
-func (cw *cw3d) step() {
+func (cw *cw4d) step() {
 
 	nc := make(map[Dim]uint8, intActive)
 
@@ -73,17 +73,17 @@ func (cw *cw3d) step() {
 	//fmt.Println()
 }
 
-func (cw *cw3d) steps(count int) {
+func (cw *cw4d) steps(count int) {
 	for i := 0; i < count; i++ {
 		cw.step()
 	}
 }
 
-func (cw *cw3d) add(d Dim) {
+func (cw *cw4d) add(d Dim) {
 	cw.cubes[d] = intActive
 }
 
-func (cw *cw3d) count() int {
+func (cw *cw4d) count() int {
 	count := 0
 	for _, active := range cw.cubes {
 		if active == intActive {
@@ -93,7 +93,7 @@ func (cw *cw3d) count() int {
 	return count
 }
 
-func (cw *cw3d) neighbours(c Dim) []Dim {
+func (cw *cw4d) neighbours(c Dim) []Dim {
 	st := [3]int{-1, 0, +1}
 	neighbours := []Dim{}
 
@@ -113,7 +113,7 @@ func (cw *cw3d) neighbours(c Dim) []Dim {
 	return neighbours
 }
 
-func (cw *cw3d) print() {
+func (cw *cw4d) print() {
 	fmt.Println("cycle", cw.cycle)
 	fmt.Println("count", cw.count())
 	for w := 0; w < 3; w++ {

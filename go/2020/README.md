@@ -1,4 +1,6 @@
 ```
+* 139d911 2020 Day 17 Part 2 'Solution: 2332' in 30.211981ms
+* d6a74e1 2020 Day 17 Part 1 'Solution: 380' in 2.522809ms
 * ec5b0b4 2020 Day 16 Part 2 'Solution: 1305243193339' in 1.637885ms
 * c5a8ef3 2020 Day 16 Part 1 'Solution: 26026' in 498.873µs
 * 1fa596c 2020 Day 15 Part 2 'Solution: 8984' in 5.628401814s
