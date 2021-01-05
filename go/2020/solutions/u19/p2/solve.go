@@ -33,10 +33,39 @@ func Solve(p chan string, s chan string) {
 		rules.add(ruleID, subRules)
 	}
 
+	//part 2 replace
+	var rule42 strings.Builder
+	rules.buildRegex("42", &rule42)
+	var rule31 strings.Builder
+	rules.buildRegex("31", &rule31)
+	r42 := rule42.String()
+	r31 := rule31.String()
+
+	var rule8 strings.Builder
+	rule8.WriteByte('(')
+	rule8.WriteString(rule42.String())
+	rule8.WriteByte(')')
+	rule8.WriteByte('+')
+
+	r11depth := 3 // only 3 depth repetition in input data
+	var rule11 strings.Builder
+	rule11.WriteString(r42)
+	for i := 0; i < r11depth; i++ {
+		rule11.WriteByte('(')
+		rule11.WriteString(r42)
+	}
+	for i := 0; i < r11depth; i++ {
+		rule11.WriteString(r31)
+		rule11.WriteByte(')')
+		rule11.WriteByte('?')
+	}
+	rule11.WriteString(r31)
+
 	var b strings.Builder
-	//b.Grow(2048)
+
 	b.WriteByte('^')
-	rules.buildRegex("0", &b)
+	b.WriteString(rule8.String())
+	b.WriteString(rule11.String())
 	b.WriteByte('$')
 
 	//fmt.Println(b.String())

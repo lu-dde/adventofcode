@@ -40,7 +40,7 @@ func Problems() []solver.Problem {
 			Day:       day,
 			Part:      "2",
 			Solve:     p2.Solve,
-			InputFile: path + "/test.1.txt",
+			InputFile: path + "/test.12.txt",
 		},
 	}
 
